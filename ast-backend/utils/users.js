@@ -7,13 +7,10 @@ const CACHE_TTL = 60 * 1000;
 async function getUsers() {
   const now = Date.now();
   if (!usersCache.length || now - lastFetchTime > CACHE_TTL) {
-    console.log('Fetching users from dummyjson...');
     const response = await fetch(process.env.API_URL_DUMMY_JSON);
     const data = await response.json();
     usersCache = data.users || [];
     lastFetchTime = now;
-  } else {
-    console.log('Using cached users...');
   }
   return usersCache;
 }

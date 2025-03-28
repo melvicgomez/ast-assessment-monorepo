@@ -1,32 +1,43 @@
 const express = require('express');
-const bodyParser = require('body-parser');
 const passport = require('passport');
 const jwt = require('jsonwebtoken');
 const rateLimit = require('express-rate-limit');
+const cors = require('cors');
 require('dotenv').config();
 
 const { Strategy: JwtStrategy, ExtractJwt } = require('passport-jwt');
 
-const { sendMessageToCloudflare } = require('./cloudflare');
 const { getUsers } = require('./utils/users');
 const authRouter = require('./routes/auth');
 const sendMessageRouter = require('./routes/send-message');
 
 const app = express();
-app.use(bodyParser.json());
+
+// Body Parser
+app.use(express.json());
+
+// Passport
 app.use(passport.initialize());
 
-// --- Global Rate Limit ---
+// CORS
+app.use(
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })
+);
+
+// Rate Limiter
 const globalLimiter = rateLimit({
   windowMs: 60 * 1000,
-  max: 100,
+  max: 10,
   message: { message: 'Too many requests, please try again later.' },
   standardHeaders: true,
   legacyHeaders: false,
 });
 app.use(globalLimiter);
 
-// --- JWT Strategy ---
+// JWT Strategy
 passport.use(
   new JwtStrategy(
     {
@@ -46,10 +57,19 @@ passport.use(
   )
 );
 
+// Routers
 app.use(authRouter);
 app.use(sendMessageRouter);
 
-// --- Start Server ---
+// Handle 401 Unauthorized errors returned by passport or others
+app.use((err, req, res, next) => {
+  if (err.name === 'UnauthorizedError' || err.status === 401) {
+    return res.status(401).json({ error: 'Unauthorized' });
+  }
+  next(err);
+});
+
+// Start server
 app.listen(process.env.PORT, () =>
   console.log(`Server running on http://localhost:${process.env.PORT}`)
 );

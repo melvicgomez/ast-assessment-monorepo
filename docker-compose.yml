@@ -12,7 +12,7 @@ services:
     working_dir: /app
     volumes:
       - ./ast-backend:/app
-    command: ['node', 'dist/index.js']
+    command: ['npm', 'run', 'start']
 
   frontend:
     container_name: ast-frontend-container

@@ -11,6 +11,8 @@ RUN npm install
 # Copy the entire backend source code
 COPY . .
 
+RUN rm -rf dist/
+
 # Build the backend (usually transpile TypeScript to dist/)
 RUN npm run build
 
@@ -19,4 +21,4 @@ RUN npm prune --omit=dev
 
 EXPOSE 8000
 
-CMD ["node", "dist/index.js"]
+CMD ['npm', 'run', 'start']

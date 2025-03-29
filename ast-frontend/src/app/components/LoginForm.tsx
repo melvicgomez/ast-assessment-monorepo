@@ -24,6 +24,7 @@ export default function LoginForm() {
         'Content-Type': 'application/json',
         Accept: 'application/json',
       },
+      credentials: 'include',
       body: JSON.stringify({
         email: email,
         password: password,

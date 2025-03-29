@@ -24,7 +24,7 @@ export default function Home() {
     <div>
       {showLogoutMsg && (
         <div className="fixed top-4 right-4 bg-red-500 text-white px-4 py-2 rounded shadow transition-opacity duration-500">
-          You have been logged out because your session expired.
+          You have been logged out.
         </div>
       )}
       {loading ? null : !!user?.token ? <ChatboxContainer /> : <LoginForm />}

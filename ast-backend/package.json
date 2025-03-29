@@ -4,7 +4,7 @@
   "description": "Backend for the SaaS web application that integrates an AI-based feature",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
+    "start": "node dist/index.js",
     "build": "node build.js",
     "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"

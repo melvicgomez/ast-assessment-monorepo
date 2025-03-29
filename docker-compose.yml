@@ -1,0 +1,25 @@
+version: '3.8'
+
+services:
+  backend:
+    container_name: ast-backend-container
+    image: ast-backend-image
+    build:
+      context: ./ast-backend
+      dockerfile: Dockerfile
+    ports:
+      - '8000:8000'
+    working_dir: /app
+    volumes:
+      - ./ast-backend:/app
+    command: ['node', 'dist/index.js']
+
+  frontend:
+    container_name: ast-frontend-container
+    image: ast-frontend-image
+    build:
+      context: ./ast-frontend
+      dockerfile: Dockerfile
+    ports:
+      - '3000:3000'
+    command: ['npm', 'run', 'start']

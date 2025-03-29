@@ -9,8 +9,8 @@ import { User } from '../models/user';
 
 export default function LoginForm() {
   const { login } = useAuth();
-  const [email, setEmail] = useState<string>('liam.garcia@x.dummyjson.com');
-  const [password, setPassword] = useState<string>('liamgpass');
+  const [email, setEmail] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const [emailHasError, setEmailHasError] = useState<string>('');

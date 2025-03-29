@@ -13,9 +13,10 @@ import { useMessage } from './ChatMessageContext';
 
 type AuthContextType = {
   user: User | null;
+  isLogout: boolean;
   loading: boolean;
   login: (user: User) => void;
-  updateUser: (user: User) => void;
+  setIsLogout: (value: boolean) => void;
   logout: () => void;
 };
 
@@ -28,12 +29,18 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
+  const [userId, setUserId] = useState<string>('');
   const [loading, setLoading] = useState(true);
+  const [isLogout, setIsLogout] = useState(false);
 
   const { clearMessages } = useMessage();
 
   useEffect(() => {
     const storedUser = localStorage.getItem('ast-user');
+    const storedUserId = localStorage.getItem('ast-user-id');
+    if (storedUserId) {
+      setUserId(storedUserId);
+    }
     if (storedUser) {
       try {
         const parsedUser: User = JSON.parse(storedUser);
@@ -54,26 +61,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const login = (newUser: User) => {
     // every new user tried to access it, we clear the chat messages
-    if (user?.id !== newUser.id) {
+    if (userId !== newUser.id.toString()) {
       clearMessages();
     }
     localStorage.setItem('ast-user', JSON.stringify(newUser));
+    localStorage.setItem('ast-user-id', `${newUser.id}`);
     setUser(newUser);
   };
 
-  const updateUser = (user: User) => {
-    localStorage.setItem('ast-user', JSON.stringify(user));
-    setUser(user);
-  };
-
   const logout = () => {
-    localStorage.removeItem('ast-user');
-    clearMessages();
+    setIsLogout(true);
     setUser(null);
+    localStorage.removeItem('ast-user');
   };
 
   return (
-    <AuthContext.Provider value={{ user, login, logout, loading, updateUser }}>
+    <AuthContext.Provider
+      value={{ user, login, logout, loading, isLogout, setIsLogout }}
+    >
       {children}
     </AuthContext.Provider>
   );

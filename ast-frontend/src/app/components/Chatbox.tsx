@@ -7,7 +7,7 @@ import { useAuth } from '../providers/UserContext';
 
 export default function Chatbox() {
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const { user, updateUser } = useAuth();
+  const { user, logout } = useAuth();
 
   const [contentMessage, setContentMessage] = useState<string>('');
   const { setNewMessage } = useMessage();
@@ -58,12 +58,7 @@ export default function Chatbox() {
       );
 
       if (response.status === 401) {
-        if (user) {
-          // we remove the token but keep the last session
-          // when different user login, we clear the chat history
-          user.token = '';
-          updateUser(user);
-        }
+        logout();
       }
 
       if (response.status === 429) {
@@ -89,7 +84,7 @@ export default function Chatbox() {
       setIsLoading(false);
       scrollToLastChild();
     }
-  }, [contentMessage, setNewMessage, updateUser, user]);
+  }, [contentMessage, logout, setNewMessage, user?.token]);
 
   return (
     <div className="w-full bg-zinc-50/50 flex flex-row">
